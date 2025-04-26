@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,8 +67,14 @@ public class BookingService {
         return convertToDTO(updatedBooking);
     }
 
-    public void deleteBooking(Long id) {
-        bookingRepository.deleteById(id);
+    public boolean deleteBooking(Long id) {
+        Optional<Booking> bookingOptional = bookingRepository.findById(id);
+        if (bookingOptional.isPresent()) {
+            bookingRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private BookingDTO convertToDTO(Booking booking) {

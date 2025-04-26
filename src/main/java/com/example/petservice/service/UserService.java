@@ -45,8 +45,13 @@ public class UserService {
         return convertToDTO(updatedUser);
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public boolean deleteUser(Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private UserDTO convertToDTO(User user) {

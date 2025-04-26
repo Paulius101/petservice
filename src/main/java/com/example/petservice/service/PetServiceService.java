@@ -30,7 +30,7 @@ public class PetServiceService {
         return convertToDTO(service);
     }
 
-    public PetServiceDTO createService(PetServiceDTO serviceDTO) {
+    public PetServiceDTO createPetService(PetServiceDTO serviceDTO) {
         PetService service = convertToEntity(serviceDTO);
         PetService savedService = petServiceRepository.save(service);
         return convertToDTO(savedService);
