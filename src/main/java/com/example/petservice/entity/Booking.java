@@ -3,6 +3,7 @@ package com.example.petservice.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDate;
 
 @Entity
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class Booking {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
@@ -20,10 +22,10 @@ public class Booking {
     private String notes;
 
     @ManyToOne
-    @JoinColumn(name = "service_id")
-    private Service service;
-
-    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "service_id")
+    private PetService service;
 }

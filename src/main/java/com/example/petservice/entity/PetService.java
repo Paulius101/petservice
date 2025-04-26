@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "services")
 @Getter
 @Setter
-public class Service {
+public class PetService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serviceId;
