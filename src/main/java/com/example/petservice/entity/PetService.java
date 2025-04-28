@@ -15,6 +15,7 @@ public class PetService {
     private Long serviceId;
 
     private String name;
+    @Column(length = 1024)
     private String description;
     private Double price;
 

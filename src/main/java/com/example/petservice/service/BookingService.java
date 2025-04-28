@@ -28,11 +28,12 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public List<BookingDTO> getAllBookings() {
-        return bookingRepository.findAll().stream()
+    public List<BookingDTO> getBookingsByUserId(Long userId) {
+        return bookingRepository.findByUser_UserId(userId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
 
     public BookingDTO getBookingById(Long id) {
         Booking booking = bookingRepository.findById(id)
@@ -50,18 +51,33 @@ public class BookingService {
         Booking existingBooking = bookingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id " + id));
 
-        existingBooking.setPetName(bookingDTO.getPetName());
-        existingBooking.setStartDate(bookingDTO.getStartDate());
-        existingBooking.setEndDate(bookingDTO.getEndDate());
-        existingBooking.setNotes(bookingDTO.getNotes());
+        if (bookingDTO.getPetName() != null) {
+            existingBooking.setPetName(bookingDTO.getPetName());
+        }
 
-        PetService service = petServiceRepository.findById(bookingDTO.getServiceId())
-                .orElseThrow(() -> new EntityNotFoundException("Service not found with id " + bookingDTO.getServiceId()));
-        existingBooking.setService(service);
+        if (bookingDTO.getStartDate() != null) {
+            existingBooking.setStartDate(bookingDTO.getStartDate());
+        }
 
-        User user = userRepository.findById(bookingDTO.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + bookingDTO.getUserId()));
-        existingBooking.setUser(user);
+        if (bookingDTO.getEndDate() != null) {
+            existingBooking.setEndDate(bookingDTO.getEndDate());
+        }
+
+        if (bookingDTO.getNotes() != null) {
+            existingBooking.setNotes(bookingDTO.getNotes());
+        }
+
+        if (bookingDTO.getServiceId() != null) {
+            PetService service = petServiceRepository.findById(bookingDTO.getServiceId())
+                    .orElseThrow(() -> new EntityNotFoundException("Service not found with id " + bookingDTO.getServiceId()));
+            existingBooking.setService(service);
+        }
+
+        if (bookingDTO.getUserId() != null) {
+            User user = userRepository.findById(bookingDTO.getUserId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with id " + bookingDTO.getUserId()));
+            existingBooking.setUser(user);
+        }
 
         Booking updatedBooking = bookingRepository.save(existingBooking);
         return convertToDTO(updatedBooking);
