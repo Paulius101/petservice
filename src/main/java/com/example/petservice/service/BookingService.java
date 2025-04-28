@@ -8,7 +8,7 @@ import com.example.petservice.repository.BookingRepository;
 import com.example.petservice.repository.PetServiceRepository;
 import com.example.petservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.BeanUtils;
+import com.example.petservice.converter.BookingConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,30 +21,31 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final PetServiceRepository petServiceRepository;
     private final UserRepository userRepository;
+    private final BookingConverter bookingConverter; // Inject converter
 
-    public BookingService(BookingRepository bookingRepository, PetServiceRepository petServiceRepository, UserRepository userRepository) {
+    public BookingService(BookingRepository bookingRepository, PetServiceRepository petServiceRepository, UserRepository userRepository, BookingConverter bookingConverter) {
         this.bookingRepository = bookingRepository;
         this.petServiceRepository = petServiceRepository;
         this.userRepository = userRepository;
+        this.bookingConverter = bookingConverter;
     }
 
     public List<BookingDTO> getBookingsByUserId(Long userId) {
         return bookingRepository.findByUser_UserId(userId).stream()
-                .map(this::convertToDTO)
+                .map(bookingConverter::toDTO)
                 .collect(Collectors.toList());
     }
-
 
     public BookingDTO getBookingById(Long id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id " + id));
-        return convertToDTO(booking);
+        return bookingConverter.toDTO(booking);
     }
 
     public BookingDTO createBooking(BookingDTO bookingDTO) {
-        Booking booking = convertToEntity(bookingDTO);
+        Booking booking = bookingConverter.toEntity(bookingDTO); // Use converter
         Booking savedBooking = bookingRepository.save(booking);
-        return convertToDTO(savedBooking);
+        return bookingConverter.toDTO(savedBooking);
     }
 
     public BookingDTO updateBooking(Long id, BookingDTO bookingDTO) {
@@ -80,7 +81,7 @@ public class BookingService {
         }
 
         Booking updatedBooking = bookingRepository.save(existingBooking);
-        return convertToDTO(updatedBooking);
+        return bookingConverter.toDTO(updatedBooking); // Use converter
     }
 
     public boolean deleteBooking(Long id) {
@@ -91,35 +92,5 @@ public class BookingService {
         } else {
             return false;
         }
-    }
-
-    private BookingDTO convertToDTO(Booking booking) {
-        BookingDTO dto = new BookingDTO();
-        BeanUtils.copyProperties(booking, dto);
-        if (booking.getService() != null) {
-            dto.setServiceId(booking.getService().getServiceId());
-        }
-        if (booking.getUser() != null) {
-            dto.setUserId(booking.getUser().getUserId());
-        }
-        return dto;
-    }
-
-    private Booking convertToEntity(BookingDTO dto) {
-        Booking booking = new Booking();
-        booking.setPetName(dto.getPetName());
-        booking.setStartDate(dto.getStartDate());
-        booking.setEndDate(dto.getEndDate());
-        booking.setNotes(dto.getNotes());
-
-        PetService service = petServiceRepository.findById(dto.getServiceId())
-                .orElseThrow(() -> new EntityNotFoundException("Service not found with id " + dto.getServiceId()));
-        booking.setService(service);
-
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + dto.getUserId()));
-        booking.setUser(user);
-
-        return booking;
     }
 }

@@ -1,10 +1,8 @@
 package com.example.petservice.controller;
-
 import com.example.petservice.dto.BookingDTO;
 import com.example.petservice.service.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

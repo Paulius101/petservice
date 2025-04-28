@@ -1,11 +1,11 @@
 package com.example.petservice.service;
 
+import com.example.petservice.converter.UserConverter;
 import com.example.petservice.dto.UserDTO;
 import com.example.petservice.entity.User;
 import com.example.petservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,21 +15,23 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserConverter userConverter;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserConverter userConverter) {
         this.userRepository = userRepository;
+        this.userConverter = userConverter;
     }
 
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(userConverter::toDTO)
                 .collect(Collectors.toList());
     }
 
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
-        return convertToDTO(user);
+        return userConverter.toDTO(user);
     }
 
     public UserDTO createUser(UserDTO userDTO) {
@@ -37,18 +39,22 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists with the same username or email");
         }
 
-        User user = convertToEntity(userDTO);
+        User user = userConverter.toEntity(userDTO);
         User savedUser = userRepository.save(user);
-        return convertToDTO(savedUser);
+        return userConverter.toDTO(savedUser);
     }
 
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
 
-        BeanUtils.copyProperties(userDTO, existingUser, "userId");
+        existingUser.setUsername(userDTO.getUsername());
+        existingUser.setOwnerName(userDTO.getOwnerName());
+        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        existingUser.setEmail(userDTO.getEmail());
+
         User updatedUser = userRepository.save(existingUser);
-        return convertToDTO(updatedUser);
+        return userConverter.toDTO(updatedUser);
     }
 
     public boolean deleteUser(Long id) {
@@ -58,17 +64,5 @@ public class UserService {
         } else {
             return false;
         }
-    }
-
-    private UserDTO convertToDTO(User user) {
-        UserDTO dto = new UserDTO();
-        BeanUtils.copyProperties(user, dto);
-        return dto;
-    }
-
-    private User convertToEntity(UserDTO dto) {
-        User user = new User();
-        BeanUtils.copyProperties(dto, user);
-        return user;
     }
 }
