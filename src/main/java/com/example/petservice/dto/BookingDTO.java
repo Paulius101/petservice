@@ -12,5 +12,6 @@ public class BookingDTO {
     private LocalDate endDate;
     private String notes;
     private Long serviceId;
+    private String serviceName;
     private Long userId;
 }
