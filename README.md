@@ -1,8 +1,13 @@
 # 🐾 PetService API
 
-A Spring Boot-based RESTful web service for managing pet services, user accounts, and booking appointments. This project provides endpoints for CRUD operations on users, services, and bookings.
+A Spring Boot-based RESTful web service for managing pet services, user accounts, and booking appointments. This project
+provides endpoints for CRUD operations on users, services, and bookings.
 
 ---
+
+## 🌐 Frontend (Angular)
+
+This project is paired with an Angular frontend located at [animal-hotel](https://github.com/Paulius101/animal-hotel).
 
 ## 📋 Features
 
@@ -10,6 +15,7 @@ A Spring Boot-based RESTful web service for managing pet services, user accounts
 - **Service Catalog**: Manage a list of available pet services (e.g., grooming, walking).
 - **Booking System**: Book, view, and cancel appointments between users and services.
 - **DTO & Converter Pattern**: Clean separation between entity models and data transfer objects.
+- **Global Exception Handler**: Has a format to provide errors with and a couple exception handling scenarious.
 - **OpenAPI Documentation**: Swagger UI integrated for easy API testing.
 
 ---
@@ -89,6 +95,7 @@ com.example.petservice
 ├── converter        # DTO ↔ Entity mappers
 ├── dto              # Data Transfer Objects
 ├── entity           # JPA entities
+├── exception        # Global exception handler and custom exceptions
 ├── config           # Swagger and other config
 └── repository       # Spring Data Repositories
 ```
@@ -98,6 +105,6 @@ com.example.petservice
 ## 🚀 Future Improvements
 
 - Add authentication/authorization
-- Add pagination and filtering to endpoints
+- Add error logging to Splunk or alike product
 
 
