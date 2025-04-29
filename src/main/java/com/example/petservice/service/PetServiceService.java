@@ -1,10 +1,12 @@
 package com.example.petservice.service;
+
 import com.example.petservice.converter.PetServiceConverter;
 import com.example.petservice.dto.PetServiceDTO;
 import com.example.petservice.entity.PetService;
+import com.example.petservice.exception.ResourceNotFoundException;
 import com.example.petservice.repository.PetServiceRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +28,7 @@ public class PetServiceService {
 
     public PetServiceDTO getServiceById(Long id) {
         PetService service = petServiceRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Service not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));  // Throwing ResourceNotFoundException
         return petServiceConverter.toDTO(service);
     }
 
@@ -38,7 +40,7 @@ public class PetServiceService {
 
     public PetServiceDTO updateService(Long id, PetServiceDTO serviceDTO) {
         PetService existingService = petServiceRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Service not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));
 
         if (serviceDTO.getName() != null) {
             existingService.setName(serviceDTO.getName());
@@ -55,6 +57,7 @@ public class PetServiceService {
     }
 
     public void deleteService(Long id) {
+        petServiceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));  // Checking existence before delete
         petServiceRepository.deleteById(id);
     }
 }
