@@ -3,11 +3,10 @@ package com.example.petservice.service;
 import com.example.petservice.converter.UserConverter;
 import com.example.petservice.dto.UserDTO;
 import com.example.petservice.entity.User;
+import com.example.petservice.exception.ResourceNotFoundException;
+import com.example.petservice.exception.ConflictException;
 import com.example.petservice.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,13 +29,13 @@ public class UserService {
 
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
         return userConverter.toDTO(user);
     }
 
     public UserDTO createUser(UserDTO userDTO) {
         if (userRepository.existsByUsername(userDTO.getUsername()) || userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists with the same username or email");
+            throw new ConflictException("User already exists with the same username or email");
         }
 
         User user = userConverter.toEntity(userDTO);
@@ -46,7 +45,7 @@ public class UserService {
 
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
 
         existingUser.setUsername(userDTO.getUsername());
         existingUser.setOwnerName(userDTO.getOwnerName());

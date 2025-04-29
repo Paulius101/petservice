@@ -4,10 +4,10 @@ import com.example.petservice.dto.BookingDTO;
 import com.example.petservice.entity.Booking;
 import com.example.petservice.entity.PetService;
 import com.example.petservice.entity.User;
+import com.example.petservice.exception.ResourceNotFoundException;
 import com.example.petservice.repository.BookingRepository;
 import com.example.petservice.repository.PetServiceRepository;
 import com.example.petservice.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import com.example.petservice.converter.BookingConverter;
 import org.springframework.stereotype.Service;
 
@@ -38,19 +38,19 @@ public class BookingService {
 
     public BookingDTO getBookingById(Long id) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Booking not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + id));
         return bookingConverter.toDTO(booking);
     }
 
     public BookingDTO createBooking(BookingDTO bookingDTO) {
-        Booking booking = bookingConverter.toEntity(bookingDTO); // Use converter
+        Booking booking = bookingConverter.toEntity(bookingDTO);
         Booking savedBooking = bookingRepository.save(booking);
         return bookingConverter.toDTO(savedBooking);
     }
 
     public BookingDTO updateBooking(Long id, BookingDTO bookingDTO) {
         Booking existingBooking = bookingRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Booking not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + id));
 
         if (bookingDTO.getPetName() != null) {
             existingBooking.setPetName(bookingDTO.getPetName());
@@ -70,13 +70,13 @@ public class BookingService {
 
         if (bookingDTO.getServiceId() != null) {
             PetService service = petServiceRepository.findById(bookingDTO.getServiceId())
-                    .orElseThrow(() -> new EntityNotFoundException("Service not found with id " + bookingDTO.getServiceId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + bookingDTO.getServiceId()));
             existingBooking.setService(service);
         }
 
         if (bookingDTO.getUserId() != null) {
             User user = userRepository.findById(bookingDTO.getUserId())
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with id " + bookingDTO.getUserId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + bookingDTO.getUserId()));
             existingBooking.setUser(user);
         }
 

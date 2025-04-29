@@ -1,8 +1,11 @@
 package com.example.petservice.controller;
+
 import com.example.petservice.dto.BookingDTO;
 import com.example.petservice.service.BookingService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -28,7 +31,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> createBooking(@Valid @RequestBody BookingDTO bookingDTO) {
         BookingDTO createdBooking = bookingService.createBooking(bookingDTO);
         return ResponseEntity.ok(createdBooking);
     }
