@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 public class BookingConverter {
 
     @Autowired
-    private PetServiceRepository petServiceRepository;
+    PetServiceRepository petServiceRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     public Booking toEntity(BookingDTO bookingDTO) {
         Booking booking = new Booking();
