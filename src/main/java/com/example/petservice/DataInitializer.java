@@ -16,9 +16,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Check if the database is empty before inserting data
         if (petServiceRepository.count() == 0) {
-            // Creating sample PetService data
             PetService service1 = new PetService();
             service1.setName("Viešbutis");
             service1.setDescription("Jaukus kambarėlis jūsų šuns saugumui bei jaukumui;\n" +
@@ -45,7 +43,6 @@ public class DataInitializer implements CommandLineRunner {
                     "Šunų dresūra vyksta uždaroje mūsų viešbučio aikštelėje, o esant prastam orui – vidinėse patalpose. Be to, esant reikalui dresūros pamokas galime perkelti į Jūsų namus ar į bet kurią kitą vietą Vilniaus mieste.");
             service3.setPrice(40.0);
 
-            // Saving the services to the database
             petServiceRepository.save(service1);
             petServiceRepository.save(service2);
             petServiceRepository.save(service3);
