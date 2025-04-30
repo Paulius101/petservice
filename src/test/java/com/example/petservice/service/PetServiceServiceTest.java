@@ -1,13 +1,17 @@
 package com.example.petservice.service;
+
 import com.example.petservice.converter.PetServiceConverter;
 import com.example.petservice.dto.PetServiceDTO;
 import com.example.petservice.entity.PetService;
+import com.example.petservice.exception.ResourceNotFoundException;
 import com.example.petservice.repository.PetServiceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -57,7 +61,7 @@ class PetServiceServiceTest {
     void testGetServiceById_whenNotFound() {
         when(petServiceRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             petServiceService.getServiceById(999L);
         });
     }
@@ -102,14 +106,18 @@ class PetServiceServiceTest {
         when(petServiceRepository.findById(1L)).thenReturn(Optional.empty());
         PetServiceDTO dto = new PetServiceDTO();
 
-        assertThrows(EntityNotFoundException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             petServiceService.updateService(1L, dto);
         });
     }
 
     @Test
     void testDeleteService() {
+        when(petServiceRepository.existsById(1L)).thenReturn(true);
+
         petServiceService.deleteService(1L);
+
         verify(petServiceRepository).deleteById(1L);
     }
+
 }

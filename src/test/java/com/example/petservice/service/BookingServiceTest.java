@@ -1,7 +1,9 @@
 package com.example.petservice.service;
+
 import com.example.petservice.converter.BookingConverter;
 import com.example.petservice.dto.BookingDTO;
 import com.example.petservice.entity.Booking;
+import com.example.petservice.exception.ResourceNotFoundException;
 import com.example.petservice.repository.BookingRepository;
 import com.example.petservice.repository.PetServiceRepository;
 import com.example.petservice.repository.UserRepository;
@@ -9,7 +11,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -67,7 +71,7 @@ class BookingServiceTest {
     void testGetBookingById_notFound_throws() {
         when(bookingRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> bookingService.getBookingById(1L));
+        assertThrows(ResourceNotFoundException.class, () -> bookingService.getBookingById(1L));
     }
 
     @Test
@@ -110,8 +114,7 @@ class BookingServiceTest {
 
     @Test
     void testDeleteBooking_found_returnsTrue() {
-        Booking booking = new Booking();
-        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.existsById(1L)).thenReturn(true);
 
         boolean deleted = bookingService.deleteBooking(1L);
 

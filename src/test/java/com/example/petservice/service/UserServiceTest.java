@@ -1,14 +1,19 @@
 package com.example.petservice.service;
+
 import com.example.petservice.converter.UserConverter;
 import com.example.petservice.dto.UserDTO;
 import com.example.petservice.entity.User;
+import com.example.petservice.exception.ConflictException;
+import com.example.petservice.exception.ResourceNotFoundException;
 import com.example.petservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -58,7 +63,7 @@ class UserServiceTest {
     void testGetUserById_whenNotFound() {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> userService.getUserById(999L));
+        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(999L));
     }
 
     @Test
@@ -88,7 +93,7 @@ class UserServiceTest {
 
         when(userRepository.existsByUsername("testuser")).thenReturn(true);
 
-        assertThrows(ResponseStatusException.class, () -> userService.createUser(dto));
+        assertThrows(ConflictException.class, () -> userService.createUser(dto));
     }
 
     @Test
@@ -118,7 +123,7 @@ class UserServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(1L, dto));
+        assertThrows(ResourceNotFoundException.class, () -> userService.updateUser(1L, dto));
     }
 
     @Test
