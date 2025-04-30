@@ -1,4 +1,5 @@
 package com.example.petservice.converter;
+
 import com.example.petservice.dto.BookingDTO;
 import com.example.petservice.entity.Booking;
 import com.example.petservice.entity.PetService;
@@ -8,7 +9,9 @@ import com.example.petservice.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -23,7 +26,7 @@ public class BookingConverterTest {
         petServiceRepository = mock(PetServiceRepository.class);
         userRepository = mock(UserRepository.class);
 
-        bookingConverter = new BookingConverter();
+        bookingConverter = new BookingConverter(petServiceRepository, userRepository);
         bookingConverter.petServiceRepository = petServiceRepository;
         bookingConverter.userRepository = userRepository;
     }

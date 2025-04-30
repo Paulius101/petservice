@@ -21,7 +21,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final PetServiceRepository petServiceRepository;
     private final UserRepository userRepository;
-    private final BookingConverter bookingConverter; // Inject converter
+    private final BookingConverter bookingConverter;
 
     public BookingService(BookingRepository bookingRepository, PetServiceRepository petServiceRepository, UserRepository userRepository, BookingConverter bookingConverter) {
         this.bookingRepository = bookingRepository;
@@ -81,16 +81,15 @@ public class BookingService {
         }
 
         Booking updatedBooking = bookingRepository.save(existingBooking);
-        return bookingConverter.toDTO(updatedBooking); // Use converter
+        return bookingConverter.toDTO(updatedBooking);
     }
 
     public boolean deleteBooking(Long id) {
-        Optional<Booking> bookingOptional = bookingRepository.findById(id);
-        if (bookingOptional.isPresent()) {
-            bookingRepository.deleteById(id);
-            return true;
-        } else {
+        if (!bookingRepository.existsById(id)) {
             return false;
         }
+        bookingRepository.deleteById(id);
+        return true;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.petservice.dto;
+package com.example.petservice.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

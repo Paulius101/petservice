@@ -42,22 +42,22 @@ public class PetServiceService {
         PetService existingService = petServiceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));
 
-        if (serviceDTO.getName() != null) {
-            existingService.setName(serviceDTO.getName());
-        }
-        if (serviceDTO.getPrice() != null) {
-            existingService.setPrice(serviceDTO.getPrice());
-        }
-        if (serviceDTO.getDescription() != null) {
-            existingService.setDescription(String.join("\n", serviceDTO.getDescription()));
-        }
+        existingService.setName(serviceDTO.getName());
+        existingService.setPrice(serviceDTO.getPrice());
+        existingService.setDescription(String.join("\n", serviceDTO.getDescription()));
 
         PetService updatedService = petServiceRepository.save(existingService);
         return petServiceConverter.toDTO(updatedService);
     }
 
-    public void deleteService(Long id) {
-        petServiceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));  // Checking existence before delete
-        petServiceRepository.deleteById(id);
+
+    public boolean deleteService(Long id) {
+        if (petServiceRepository.existsById(id)) {
+            petServiceRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
+
 }
