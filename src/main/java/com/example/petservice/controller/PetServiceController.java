@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/services")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PetServiceController {
 
     private final PetServiceService petServiceService;
@@ -44,7 +43,11 @@ public class PetServiceController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteService(@PathVariable Long id) {
-        petServiceService.deleteService(id);
-        return ResponseEntity.noContent().build();
+        boolean deleted = petServiceService.deleteService(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

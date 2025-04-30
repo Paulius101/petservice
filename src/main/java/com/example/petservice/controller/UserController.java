@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
@@ -51,4 +50,5 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

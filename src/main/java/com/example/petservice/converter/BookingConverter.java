@@ -7,17 +7,18 @@ import com.example.petservice.entity.PetService;
 import com.example.petservice.entity.User;
 import com.example.petservice.repository.PetServiceRepository;
 import com.example.petservice.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BookingConverter {
 
-    @Autowired
     PetServiceRepository petServiceRepository;
-
-    @Autowired
     UserRepository userRepository;
+
+    public BookingConverter(PetServiceRepository petServiceRepository, UserRepository userRepository) {
+        this.petServiceRepository = petServiceRepository;
+        this.userRepository = userRepository;
+    }
 
     public Booking toEntity(BookingDTO bookingDTO) {
         Booking booking = new Booking();

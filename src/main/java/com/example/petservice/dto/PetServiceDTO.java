@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 public class PetServiceDTO {
 
-    @NotNull(message = "Service ID cannot be null")
     private Long serviceId;
 
     @NotBlank(message = "Service name cannot be empty")
